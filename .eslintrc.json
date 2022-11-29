@@ -24,4 +24,4 @@
         "react/react-in-jsx-scope": "off",
         "no-use-before-define": "off"
     }
-} 
+}
