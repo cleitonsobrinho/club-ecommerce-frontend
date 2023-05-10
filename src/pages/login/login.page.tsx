@@ -2,6 +2,7 @@ import { BsGoogle } from 'react-icons/bs'
 import { FiLogIn } from 'react-icons/fi'
 import { useForm } from 'react-hook-form'
 import validator from 'validator'
+import { signInWithEmailAndPassword, AuthError, AuthErrorCodes } from '@firebase/auth'
 
 // Components
 import CustomButton from '../../components/custom-button/custom-button.component'
@@ -17,6 +18,7 @@ import {
   LoginInputContainer,
   LoginSubtitle
 } from './login.styles'
+import { auth } from '../../config/firebase.config'
 
 interface LoginForm {
   email: string
@@ -27,11 +29,26 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm<LoginForm>()
 
-  const handleSubmitPress = (data: any) => {
-    console.log({ data })
+  const handleSubmitPress = async (data: LoginForm) => {
+    try {
+      const userCredentials = await signInWithEmailAndPassword(auth, data.email, data.password)
+
+      console.log(userCredentials)
+    } catch (error) {
+      const _error = error as AuthError
+
+      if (_error.code === AuthErrorCodes.INVALID_PASSWORD) {
+        return setError('password', { type: 'mismatch' })
+      }
+
+      if (_error.code === AuthErrorCodes.USER_DELETED) {
+        return setError('email', { type: 'notFound' })
+      }
+    }
   }
 
   return (
@@ -70,6 +87,13 @@ const LoginPage = () => {
                 Por favor, insira um e-mail válido.
               </InputErrorMessage>
             )}
+
+            {errors?.email?.type === 'notFound' && (
+              <InputErrorMessage>
+                O e-mail não foi encontrado.
+              </InputErrorMessage>
+            )}
+
           </LoginInputContainer>
 
           <LoginInputContainer>
