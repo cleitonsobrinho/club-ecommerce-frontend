@@ -13,6 +13,12 @@ import CustomButton from '../../components/custom-button/custom-button.component
 import CustomInput from '../../components/custom-input/custom-input.component'
 import Header from '../../components/header/header.component'
 import InputErrorMessage from '../../components/input-error-message/input-error-message.component'
+import { useNavigate } from 'react-router-dom'
+import { useContext, useEffect } from 'react'
+
+// Components
+import { UserContext } from '../../contexts/user.context'
+import { auth, db } from '../../config/firebase.config'
 
 // Styles
 import {
@@ -23,7 +29,6 @@ import {
 } from './sign-up.styles'
 
 // Utilities
-import { auth, db } from '../../config/firebase.config'
 
 interface SignUpForm {
   firstName: string
@@ -43,6 +48,16 @@ const SignUpPage = () => {
   } = useForm<SignUpForm>()
 
   const watchPassword = watch('password')
+
+  const { isAuthenticated } = useContext(UserContext)
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated])
 
   const handleSubmitPress = async(data: SignUpForm) => {
     try {
