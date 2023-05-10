@@ -108,6 +108,10 @@ const LoginPage = () => {
             {errors?.password?.type === 'required' && (
               <InputErrorMessage>A senha é obrigatória.</InputErrorMessage>
             )}
+
+            {errors?.password?.type === 'mismatch' && (
+              <InputErrorMessage>A senha é inválida.</InputErrorMessage>
+            )}
           </LoginInputContainer>
 
           <CustomButton
