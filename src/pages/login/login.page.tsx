@@ -69,7 +69,6 @@ const LoginPage = () => {
 
   const handleSignInWithGooglePress = async () => {
     try {
-      console.log('deu ceerto')
       const userCredentials = await signInWithPopup(auth, googleProvider)
 
       const querySnapshot = await getDocs(
